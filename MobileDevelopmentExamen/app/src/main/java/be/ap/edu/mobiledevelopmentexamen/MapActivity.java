@@ -103,10 +103,10 @@ public class MapActivity extends AppCompatActivity {
                 GeoPoint loc = (GeoPoint) proj.fromPixels((int)ev.getX(), (int)ev.getY() - (searchField.getHeight() * 2));
                 double lat = loc.getLatitude();
                 double lon = loc.getLongitude();
-                //Intent i = new Intent(this, DetailActivity.class);
-                //i.putExtra("latitude", (Serializable) lat);
-                //i.putExtra("longitude", (Serializable) lon);
-                //startActivity(i);
+                Intent i = new Intent(this, DetailActivity.class);
+                i.putExtra("latitude", (Serializable) lat);
+                i.putExtra("longitude", (Serializable) lon);
+                startActivity(i);
         }
         return super.dispatchTouchEvent(ev);
     }
