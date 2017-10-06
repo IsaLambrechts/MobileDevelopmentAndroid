@@ -57,7 +57,7 @@ class MapSQLiteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    /*public Double getlat(int id) {
+    public Double getlat(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE _id = " + id;
@@ -89,9 +89,9 @@ class MapSQLiteHelper extends SQLiteOpenHelper {
 
         return lon;
 
-    }*/
+    }
 
-    public Coords get_DatabaseObject(int id) {
+    /*public Coords get_DatabaseObject(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_NAME, new String[] { "_id", "latitude", "longitude", "omschrijving" }, "_id" + "=?",
@@ -129,7 +129,7 @@ class MapSQLiteHelper extends SQLiteOpenHelper {
 
         // return database object list
         return contactList;
-    }
+    }*/
 
     public String getTableAsString() {
         SQLiteDatabase db = this.getWritableDatabase();

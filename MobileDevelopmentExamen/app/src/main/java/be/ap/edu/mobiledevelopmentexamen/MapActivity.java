@@ -103,10 +103,10 @@ public class MapActivity extends AppCompatActivity {
         });
 
 
-        /*if(helper.getlat(1) != null) {
+        if(helper.getlat(1) != null) {
             GeoPoint g = new GeoPoint(Integer.parseInt(helper.getlat(1).toString()), Integer.parseInt(helper.getLon(1).toString()));
             addMarker(g);
-        }*/
+        }
 
     }
 
