@@ -1,8 +1,10 @@
 package be.ap.edu.mobiledevelopmentexamen;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,14 +22,20 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -40,6 +48,8 @@ public class MapActivity extends AppCompatActivity {
     private RequestQueue mRequestQueue;
     private MapSQLiteHelper helper;
 
+    final ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +61,7 @@ public class MapActivity extends AppCompatActivity {
         mapView.setMultiTouchControls(true);
         mapView.getController().setZoom(18);
 
-        mapView.getController().setCenter(new GeoPoint(51.215559, 4.410595));
+        mapView.getController().setCenter(new GeoPoint(51.1608194, 4.5103875));
         mRequestQueue = Volley.newRequestQueue(this);
         searchField = (TextView)findViewById(R.id.search_txtview);
         searchButton = (Button)findViewById(R.id.search_button);
@@ -91,6 +101,13 @@ public class MapActivity extends AppCompatActivity {
                 mRequestQueue.add(jr);
             }
         });
+
+
+        /*if(helper.getlat(1) != null) {
+            GeoPoint g = new GeoPoint(Integer.parseInt(helper.getlat(1).toString()), Integer.parseInt(helper.getLon(1).toString()));
+            addMarker(g);
+        }*/
+
     }
 
     @Override
@@ -109,5 +126,26 @@ public class MapActivity extends AppCompatActivity {
                 startActivity(i);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    private void addMarker(GeoPoint g) {
+        OverlayItem myLocationOverlayItem = new OverlayItem("Here", "Current Position", g);
+        Drawable myCurrentLocationMarker = ResourcesCompat.getDrawable(getResources(), R.drawable.marker, null);
+        myLocationOverlayItem.setMarker(myCurrentLocationMarker);
+
+        items.add(myLocationOverlayItem);
+        DefaultResourceProxyImpl resourceProxy = new DefaultResourceProxyImpl(getApplicationContext());
+
+        ItemizedIconOverlay<OverlayItem> currentLocationOverlay = new ItemizedIconOverlay<OverlayItem>(items,
+                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                        return true;
+                    }
+                    public boolean onItemLongPress(final int index, final OverlayItem item) {
+                        return true;
+                    }
+                }, resourceProxy);
+        this.mapView.getOverlays().add(currentLocationOverlay);
+        this.mapView.invalidate();
     }
 }

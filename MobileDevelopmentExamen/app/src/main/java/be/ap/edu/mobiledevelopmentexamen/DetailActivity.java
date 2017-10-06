@@ -1,11 +1,14 @@
 package be.ap.edu.mobiledevelopmentexamen;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -38,6 +41,7 @@ public class DetailActivity extends AppCompatActivity {
 
         helper = new MapSQLiteHelper(this);
 
+        final Context context = this;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,9 +52,16 @@ public class DetailActivity extends AppCompatActivity {
                 if(!(omschrijving.matches(""))) {
                     helper.addContact(Double.parseDouble(text.toString()), Double.parseDouble(text1.toString()), omschrijving);
                     System.out.println(helper.getTableAsString());
+
+                    Intent i = new Intent(context, MapActivity.class);
+                    startActivity(i);
+                }else{
+                    Toast.makeText(getApplicationContext(),"Voeg een omschrijving toe", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
     }
+
+
 }

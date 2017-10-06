@@ -7,6 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.OverlayItem;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.id.list;
+
 /**
  * Created by CaruCath on 06-10-17.
  */
@@ -42,10 +51,84 @@ class MapSQLiteHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("longitude", lon);
         values.put("latitude", lat);
-        values.put("beschrijving", "test");
+        values.put("beschrijving", beschrijving);
 
         db.insert(TABLE_NAME, null, values);
         db.close();
+    }
+
+    /*public Double getlat(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE _id = " + id;
+        Cursor cursor = db.rawQuery(query, null);
+
+        Double lat = 0.0;
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast())
+            if(cursor.getString(cursor.getColumnIndex("latitude")) != null){
+                lat = Double.parseDouble(cursor.getString(cursor.getColumnIndex("latitude")));
+            }
+
+        return lat;
+
+    }
+
+    public Double getLon(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE _id = " + id;
+        Cursor cursor = db.rawQuery(query, null);
+
+        Double lon = 0.0;
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast())
+            if(cursor.getString(cursor.getColumnIndex("longitude")) != null){
+                lon = Double.parseDouble(cursor.getString(cursor.getColumnIndex("longitude")));
+            }
+
+        return lon;
+
+    }*/
+
+    public Coords get_DatabaseObject(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_NAME, new String[] { "_id", "latitude", "longitude", "omschrijving" }, "_id" + "=?",
+                new String[] { String.valueOf(id) }, null, null,null,null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Coords data = new Coords(Double.parseDouble(cursor.getString(1)), Double.parseDouble(cursor.getString(2)),cursor.getString(3));
+        // return database object
+        return data;
+    }
+
+    // Getting All database objects
+    public List<Coords> getAllDatabaseObject() {
+        List<Coords> contactList = new ArrayList<Coords>();
+        //  Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Coords data = new Coords();
+                data.set_id((Integer.parseInt(cursor.getString(0))));
+                data.setLat( Double.parseDouble(cursor.getString(1)));
+                data.setLon( Double.parseDouble(cursor.getString(2)));
+                data.setOmschrijving(cursor.getString(3));
+
+                //   Adding contact to list
+                contactList.add(data);
+            } while (cursor.moveToNext());
+        }
+
+        // return database object list
+        return contactList;
     }
 
     public String getTableAsString() {
